@@ -12,11 +12,9 @@ bot.on('start', function () {
     var params = {
         icon_emoji: ':japanese_ogre:'
     };
-    let complaint = getRandomComplaint();
-    // define channel, where bot exist. You can adjust it there https://my.slack.com/services 
-    if (complaint != undefined) {
-        bot.postMessageToChannel('general', complaint, params);
-    }
+
+    let randomcomplaint = getRandomComplaint();
+    bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
     // define existing username instead of 'user_name'
     //bot.postMessageToUser('user_name', 'meow!', params); 
 
