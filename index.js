@@ -52,5 +52,6 @@ wordList = [
     'Your family tree must be a cactus ‘cause you’re all a bunch of pricks.',
     'I was going to give you a nasty look but I see that you’ve already got one.',
     'Eat shit die',
-    'Go fuck yourself'
+    'Go fuck yourself',
+    `I'm on smoko, so leave me alone`
 ]
