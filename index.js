@@ -53,5 +53,6 @@ wordList = [
     'I was going to give you a nasty look but I see that you’ve already got one.',
     'Eat shit die',
     'Go fuck yourself',
+    'Fuck TypeScript',
     `I'm on smoko, so leave me alone`
 ]
