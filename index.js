@@ -1,4 +1,6 @@
-var SlackBot = require('slackbots');
+require('dotenv').config();
+const SlackBot = require('slackbots');
+
 
 // create a bot
 const envKey = process.env.KEY;
@@ -13,8 +15,15 @@ bot.on('start', function () {
         icon_emoji: ':japanese_ogre:'
     };
 
+    let dude = chooseRandomPerson();
     let randomcomplaint = getRandomComplaint();
+    let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
+    if(dude == "peter"){
+        losertext = `todays winner is ${dude}, congratulations! how do you feel?`;
+    }
     bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
+    bot.postMessageToChannel('fuck-shit-up', losertext, params);
+    
     // define existing username instead of 'user_name'
     //bot.postMessageToUser('user_name', 'meow!', params); 
 
@@ -33,14 +42,26 @@ bot.on('message', function (data) {
     //console.log(data);
 });
 
+function chooseRandomPerson() {
+    let grabben = grabbarna[Math.floor(Math.random() * grabbarna.length)];
+    return grabben;
+}
+
 function getRandomComplaint() {
     let complaint = wordList[Math.floor(Math.random() * wordList.length)];
     return complaint;
 }
 
+const grabbarna = [
+    'peter',
+    'chris',
+    'oskars',
+    'alex',
+    'elias'
+]
 
 
-wordList = [
+const wordList = [
     'Life is definitely not worth it.',
     'I regret waking up today.',
     'Come on shitheads do something productive.',
@@ -54,5 +75,9 @@ wordList = [
     'Eat shit die',
     'Go fuck yourself',
     'Fuck TypeScript',
-    `I'm on smoko, so leave me alone`
+    `I'm on smoko, so leave me alone`,
+    'Complaining never makes anything better.',
+    'We are born crying, live complaining, and die disappointed.',
+    'There are times in life when, instead of complaining, you do something about your complaints.',
+    'You should do what you do best, join the garbage in the garbage can and be the trash you really are.'
 ]
