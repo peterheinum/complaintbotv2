@@ -57,7 +57,8 @@ const grabbarna = [
     'chris',
     'oskars',
     'alex',
-    'elias'
+    'elias',
+    'viktor'
 ]
 
 
