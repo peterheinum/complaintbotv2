@@ -1,46 +1,90 @@
 require('dotenv').config();
+const fetch = require('node-fetch');
 const SlackBot = require('slackbots');
-
+const mapquest_key = process.env.MAPQUEST_KEY;
+const mapquest_secret = process.env.MAPQUEST_SECRET;
+const darksky_key = process.env.DARKSKY_KEY;
 
 // create a bot
 const envKey = process.env.KEY;
-var bot = new SlackBot({
+const bot = new SlackBot({
     token: envKey, // Add a bot https://my.slack.com/services/new/bot and put the token 
     name: 'complaintbotv2'
 });
 
+const params = {
+    icon_emoji: ':japanese_ogre:'
+};
+console.log('Goodmorning bitch')
+
 bot.on('start', function () {
     // more information about additional params https://api.slack.com/methods/chat.postMessage
-    var params = {
-        icon_emoji: ':japanese_ogre:'
-    };
+    
+    // fetchLatAndLong('goteborg').then(response => response.json()).then(latData => {
+    //     fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
+    //         console.log(weatherData.currently);
+    //     });
+    // });
 
     let dude = chooseRandomPerson();
     let randomcomplaint = getRandomComplaint();
-    let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
-    if(dude == "peter"){
-        losertext = `todays winner is ${dude}, congratulations! how do you feel?`;
+    // let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
+    // if(dude == "peter"){
+    //     losertext = `todays winner is ${dude}, congratulations! how do you feel?`;
+    // }
+    // bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
+    // bot.postMessageToChannel('fuck-shit-up', losertext, params);
+});
+
+
+
+
+
+
+// bot.on('message', msg => {
+//     console.log(msg.text);
+//     switch (msg.type) {
+//         case 'message':
+//         console.log(msg);
+//             if (msg.channel[0] === 'fuck-shit-up' && msg.bot_id === undefined) {
+//                 console.log("YIKES");
+//                 if (msg.text.split(':')[0] == 'weather') {
+//                     let city = msg.text.split(':')[1];
+//                     reportWeatherFromCity(city, msg.user);
+//                 }
+//             }
+//     }
+// })
+
+bot.on('message', msg => {
+    console.log(msg);
+    switch(msg.type) {
+        case 'message':
+        console.log(msg.text);
     }
-    bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
-    bot.postMessageToChannel('fuck-shit-up', losertext, params);
-    
-    // define existing username instead of 'user_name'
-    //bot.postMessageToUser('user_name', 'meow!', params); 
-
-    // If you add a 'slackbot' property, 
-    // you will post to another user's slackbot channel instead of a direct message
-    //bot.postMessageToUser('user_name', 'meow!', { 'slackbot': true, icon_emoji: ':cat:' }); 
-
-    // define private group instead of 'private_group', where bot exist
-    //bot.postMessageToGroup('private_group', 'meow!', params); 
-});
+})
 
 
+function reportWeatherFromCity(city, userId) {
+    let currentweather;
+    // let users = bot.getUsers();
+    // let user;
+    // users._value.members.find(e => {
+    //     if (e.id === userId) {
+    //         user = e.profile;
+    //     }
+    // });
+    // console.log(user);
 
-bot.on('message', function (data) {
-    // all ingoing events https://api.slack.com/rtm
-    //console.log(data);
-});
+    fetchLatAndLong(city).then(response => response.json()).then(latData => {
+        console.log("fetched lat long");
+        fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
+            currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
+            bot.postMessageToChannel('fuck-shit-up', currentweather + ' bitch', params);
+            //bot.postMessageToUser(user.display_name, currentweather + ' bitch', params);
+        });
+    });
+}
 
 function chooseRandomPerson() {
     let grabben = grabbarna[Math.floor(Math.random() * grabbarna.length)];
@@ -58,7 +102,8 @@ const grabbarna = [
     'oskars',
     'alex',
     'elias',
-    'viktor'
+    'virre',
+    'nils'
 ]
 
 
@@ -82,3 +127,23 @@ const wordList = [
     'There are times in life when, instead of complaining, you do something about your complaints.',
     'You should do what you do best, join the garbage in the garbage can and be the trash you really are.'
 ]
+
+
+
+function getLatAndLngFromRes(res) {
+    let latLng;
+    res.results.forEach(element => {
+        element.locations.forEach(e => {
+            latLng = `${e.latLng.lat},${e.latLng.lng}`
+        });
+    });
+    return latLng;
+}
+
+function fetchLatAndLong(city) {
+    return fetch(`http://www.mapquestapi.com/geocoding/v1/address?key=${mapquest_key}&location=${city}, SE`);
+}
+
+function fetchWeather(latlng) {
+    return fetch(`https://api.darksky.net/forecast/${darksky_key}/${latlng}?lang=sv&units=si`);
+}
