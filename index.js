@@ -21,11 +21,12 @@ bot.on('start', function () {
     let dude = chooseRandomPerson();
     let randomcomplaint = getRandomComplaint();
     let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
-    if(dude == "peter"){
+    if (dude == "peter") {
         losertext = `todays winner is ${dude}, congratulations! how do you feel?`;
     }
     bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
     bot.postMessageToChannel('fuck-shit-up', losertext, params);
+    reportWeatherFromCity('stockholm');
 });
 
 
@@ -36,33 +37,39 @@ let lastmessage = "";
 bot.on('message', msg => {
     switch (msg.type) {
         case 'message':
-            if(msg.text != lastmessage) {
+            if (msg.text != lastmessage) {
                 lastmessage = msg.text;
                 if (msg.text.split(':')[0] == 'weather') {
                     let city = msg.text.split(':')[1];
                     reportWeatherFromCity(city, msg.user);
                 }
-            }            
+            }
     }
 })
 
 function reportWeatherFromCity(city, userId) {
     let currentweather;
+    if (userId != undefined) let user = getUser(userId);
+    bot.postMessageToChannel('fuck-shit-up', 'fetching the fucking weather for you', params);
+    fetchLatAndLong(city).then(response => response.json()).then(latData => {
+        fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
+            currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
+            if (userId != undefined) {
+                bot.postMessageToChannel('fuck-shit-up', `${user.display_name} I gotchu bitch, ${currentweather}`, params);
+            } else {
+                bot.postMessageToChannel('fuck-shit-up', `Daily weather report in stockholm ${currentweather}`, params);
+            }
+        });
+    });
+}
+
+function getUser(userId) {
     let users = bot.getUsers();
     let user;
     users._value.members.find(e => {
         if (e.id === userId) {
             user = e.profile;
         }
-    });
-    
-    bot.postMessageToChannel('fuck-shit-up', 'fetching the fucking weather for you', params);
-    fetchLatAndLong(city).then(response => response.json()).then(latData => {
-        console.log("fetched lat long");
-        fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
-            currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
-            bot.postMessageToChannel('fuck-shit-up', `${user.display_name} I gotchu bitch, ${currentweather}`, params);
-        });
     });
 }
 
