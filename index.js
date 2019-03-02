@@ -26,7 +26,7 @@ bot.on('start', function () {
     }
     bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
     bot.postMessageToChannel('fuck-shit-up', losertext, params);
-    reportWeatherFromCity('stockholm');
+    reportWeatherFromCity('stockholm', "");
 });
 
 
@@ -49,12 +49,12 @@ bot.on('message', msg => {
 
 function reportWeatherFromCity(city, userId) {
     let currentweather;
-    if (userId != undefined) let user = getUser(userId);
+    if (userId != "") let user = getUser(userId);
     bot.postMessageToChannel('fuck-shit-up', 'fetching the fucking weather for you', params);
     fetchLatAndLong(city).then(response => response.json()).then(latData => {
         fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
             currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
-            if (userId != undefined) {
+            if (userId != "") {
                 bot.postMessageToChannel('fuck-shit-up', `${user.display_name} I gotchu bitch, ${currentweather}`, params);
             } else {
                 bot.postMessageToChannel('fuck-shit-up', `Daily weather report in stockholm ${currentweather}`, params);
@@ -62,6 +62,11 @@ function reportWeatherFromCity(city, userId) {
         });
     });
 }
+
+
+
+
+
 
 function getUser(userId) {
     let users = bot.getUsers();
