@@ -53,8 +53,6 @@ function reportWeatherFromCity(city, userId) {
     if (userId != "") {
         user = getUser(userId);
     }
-
-    bot.postMessageToChannel('fuck-shit-up', 'fetching the fucking weather for you', params);
     fetchLatAndLong(city).then(response => response.json()).then(latData => {
         fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
             currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
