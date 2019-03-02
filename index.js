@@ -51,7 +51,7 @@ function reportWeatherFromCity(city, userId) {
     let currentweather;
     let user;
     if (userId != "") {
-        user = bot.getUsers()._value.members.find(e => (e.id === userId));
+        user = getUser(userId);
     }
 
     fetchLatAndLong(city).then(response => response.json()).then(latData => {
@@ -67,7 +67,16 @@ function reportWeatherFromCity(city, userId) {
 }
 
 
-
+function getUser(userId) {
+    let users = bot.getUsers();
+    let user;
+    users._value.members.find(e => {
+        if (e.id === userId) {
+            user = e.profile;
+        }
+    });
+    return user;
+}
 
 function chooseRandomPerson() {
     let grabben = grabbarna[Math.floor(Math.random() * grabbarna.length)];
