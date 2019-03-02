@@ -49,7 +49,11 @@ bot.on('message', msg => {
 
 function reportWeatherFromCity(city, userId) {
     let currentweather;
-    if (userId != "") let user = getUser(userId);
+    let user;
+    if (userId != "") {
+        user = getUser(userId);
+    }
+
     bot.postMessageToChannel('fuck-shit-up', 'fetching the fucking weather for you', params);
     fetchLatAndLong(city).then(response => response.json()).then(latData => {
         fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
@@ -62,10 +66,6 @@ function reportWeatherFromCity(city, userId) {
         });
     });
 }
-
-
-
-
 
 
 function getUser(userId) {
