@@ -53,6 +53,7 @@ function reportWeatherFromCity(city, userId) {
     if (userId != "") {
         user = getUser(userId);
     }
+
     fetchLatAndLong(city).then(response => response.json()).then(latData => {
         fetchWeather(getLatAndLngFromRes(latData)).then(response => response.json()).then(weatherData => {
             currentweather = `${weatherData.currently.summary}, ${weatherData.currently.temperature}°C`;
@@ -74,6 +75,7 @@ function getUser(userId) {
             user = e.profile;
         }
     });
+    return user;
 }
 
 function chooseRandomPerson() {
