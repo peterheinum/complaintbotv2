@@ -18,6 +18,7 @@ const params = {
 console.log('Goodmorning bitch')
 
 bot.on('start', function () {
+    fetchForecast('berlin');
     let dude = chooseRandomPerson();
     let randomcomplaint = getRandomComplaint();
     let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
@@ -43,6 +44,11 @@ bot.on('message', msg => {
                     let city = msg.text.split(':')[1];
                     reportWeatherFromCity(city, msg.user);
                 }
+                if (msg.text.split(':')[0] == 'forecast') {
+                    let location = msg.text.split(':')[1];
+                    fetchForecast(location);
+                }
+                
             }
     }
 })
@@ -120,6 +126,72 @@ const wordList = [
     'You should do what you do best, join the garbage in the garbage can and be the trash you really are.'
 ]
 
+
+
+fetchForecast = (location) => {
+    fetch(`http://weatherbackend.herokuapp.com/api/forecast/${location}/C`).then(data => data.json()).then(result => {
+        let arr = [];
+        let weekArray = getWeekFromNow();
+        result.map(e => {
+            arr.push({
+                day: weekArray[e.dayNr],
+                max: e.temperatureMax,
+                min: e.temperatureMin,
+                icon: e.icon
+            })
+        });
+        
+        bot.postMessageToChannel('fuck-shit-up', stringBuilder(arr), params);
+        //bot.postMessageToChannel('reminders', stringBuilder(arr), params);
+    })
+} 
+
+stringBuilder = (forecastArray) => {
+    let newString = "";
+    for (let i = 0; i < forecastArray.length; i++) {
+        if(i == forecastArray.length -1) {
+            newString +=  `  ${forecastArray[i].day} `;            
+        } else {
+            newString +=  ` ${forecastArray[i].day}  | `;       
+        }
+    }
+    newString += '\n';
+    forecastArray.forEach(e => {
+        newString += `Max: ${e.max}  `
+    });
+    newString += '\n';
+    forecastArray.forEach(e => {
+        newString += `Min: ${e.min}  `
+    });
+    return newString;
+   
+}
+
+getWeekFromNow = () => {
+    let date = new Date();
+    let counter = date.getDay();
+    let start = date.getDay();
+    let weekArray = [];
+    let weekday = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    for (let i = 0; i < 7; i++) {
+      weekArray.push(weekday[counter])
+      counter++;
+      if (counter == 7) {
+        for (let j = 0; j < 7; j++) {
+          weekArray.push(weekday[j]);
+        }
+      }
+    }
+    return weekArray;
+  }
 
 
 function getLatAndLngFromRes(res) {
