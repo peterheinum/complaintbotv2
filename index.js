@@ -152,16 +152,16 @@ stringBuilder = (forecastArray) => {
         if(i == forecastArray.length -1) {
             newString +=  `  ${forecastArray[i].day} `;            
         } else {
-            newString +=  ` ${forecastArray[i].day}  | `;       
+            newString +=  `  ${forecastArray[i].day}  | `;       
         }
     }
     newString += '\n';
     forecastArray.forEach(e => {
-        newString += `Max: ${e.max}  `
+        newString += `Max: ${e.max}°  `
     });
     newString += '\n';
     forecastArray.forEach(e => {
-        newString += `Min: ${e.min}  `
+        newString += `Min: ${e.min}°  `
     });
     return newString;
    
