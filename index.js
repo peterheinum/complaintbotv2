@@ -18,7 +18,6 @@ const params = {
 console.log('Goodmorning bitch')
 
 bot.on('start', function () {
-    fetchForecast('berlin');
     let dude = chooseRandomPerson();
     let randomcomplaint = getRandomComplaint();
     let losertext = `todays looser is: ${dude}, congratulations, how do you feel?`;
