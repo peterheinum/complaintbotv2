@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "canvas": "^2.4.1",
     "dotenv": "^6.2.0",
+    "fs": "0.0.1-security",
     "node-fetch": "^2.3.0",
-    "slackbots": "^1.2.0"
+    "request": "^2.88.0",
+    "slackbots": "^1.2.0",
+    "vega": "^5.3.1"
   }
 }
