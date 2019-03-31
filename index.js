@@ -1,9 +1,9 @@
 require('dotenv').config();
 const fetch = require('node-fetch');
 const SlackBot = require('slackbots');
-const vega = require('vega');
+const graphGenerator = require('./Helpers/GraphGenerator');
 const fs = require('fs');
-const request = require('request');
+
 const mapquest_key = process.env.MAPQUEST_KEY;
 const mapquest_secret = process.env.MAPQUEST_SECRET;
 const darksky_key = process.env.DARKSKY_KEY;
@@ -18,31 +18,41 @@ const bot = new SlackBot({
 const params = {
     icon_emoji: ':japanese_ogre:'
 };
-console.log('Goodmorning bitch')
+
 
 bot.on('start', function () {
-    let randomcomplaint = getRandomComplaint();
-    bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
-    fetchForecast("stockholm");
+    console.log('Goodmorning bitch');
+    // let randomcomplaint = getRandomComplaint();
+    // bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
+    //fetchForecast("stockholm");
+    fetchDailyPrognosis('stockholm', "dogshit");
 });
 
-
-
-UploadGraphToSlack = () => {
-    request.post({
-        url: 'https://slack.com/api/files.upload',
-        formData: {
-            token: envKey,
-            title: "Image",
-            filename: "stackedBarChart.png",
-            filetype: "auto",
-            channels: "#fuck-shit-up",
-            file: fs.createReadStream('stackedBarChart.png'),
-        },
-    }, function (err, response) {
-        console.log(JSON.parse(response.body));
+fetchDailyPrognosis = (location, userId) => {
+    let user;
+    if (userId != "") {
+        user = getUser(userId);
+    }
+    fetch(`http://weatherbackend.herokuapp.com/api/raw/${location}/C`).then(res => res.json()).then(weatherData => {
+        //if(weatherData.alerts) bot.postMessageToChannel('fuck-shit-up', `todays weather contains a warning, check ${weatherData.alerts.uri} for details`, params);
+        const arr = weatherData.hourly.data.reduce((acc, val) => {
+            acc.push({'time': convertUnixToTime(val.time), 'temp': val.temperature });
+            return acc;
+        }, []);
+        
+        graphGenerator.createDailyGraph(arr);
+        
     });
 }
+
+convertUnixToTime = (unix_time) => {
+    let date = new Date(unix_time * 1000);
+    let hours = date.getHours();
+    let minutes = "0" + date.getMinutes();
+    return hours + ':' + minutes.substr(-2);
+}
+
+
 
 
 
@@ -135,138 +145,13 @@ fetchForecast = (location) => {
                 min: e.temperatureMin,
             })
         });
-        generateGraph(arr);
-        console.log(arr);
+        graphGenerator.generateForecastGraph(arr);
     })
 }
 
-generateGraph = (data) => {
-    // if(data) {
-    //     data.reduce((acc, val) => {
-
-    //     })
-    // }
-
-    let stackedBarChartSpec = {
-        "$schema": "https://vega.github.io/schema/vega/v5.json",
-        "width": 400,
-        "height": 200,
-        "padding": 5,
-        "background": "white",
-        "data": [
-            {
-                "name": "table",
-                "values": [
-                    { "category": data[0].day, "amount": ((data[0].max + data[0].min) / 2) },
-                    { "category": data[1].day, "amount": ((data[1].max + data[1].min) / 2) },
-                    { "category": data[2].day, "amount": ((data[2].max + data[2].min) / 2) },
-                    { "category": data[3].day, "amount": ((data[3].max + data[3].min) / 2) },
-                    { "category": data[4].day, "amount": ((data[4].max + data[4].min) / 2) },
-                    { "category": data[5].day, "amount": ((data[5].max + data[5].min) / 2) },
-                    { "category": data[6].day, "amount": ((data[6].max + data[6].min) / 2) },
-                    { "category": data[7].day, "amount": ((data[7].max + data[7].min) / 2) },
-                ]
-            }
-        ],
-
-        "signals": [
-            {
-                "name": "tooltip",
-                "value": {},
-                "on": [
-                    { "events": "rect:mouseover", "update": "datum" },
-                    { "events": "rect:mouseout", "update": "{}" }
-                ]
-            }
-        ],
-
-        "scales": [
-            {
-                "name": "xscale",
-                "type": "band",
-                "domain": { "data": "table", "field": "category" },
-                "range": "width",
-                "padding": 0.05,
-                "round": true
-            },
-            {
-                "name": "yscale",
-                "domain": { "data": "table", "field": "amount" },
-                "nice": true,
-                "range": "height"
-            }
-        ],
-
-        "axes": [
-            { "orient": "bottom", "scale": "xscale" },
-            { "orient": "left", "scale": "yscale" }
-        ],
-
-        "marks": [
-            {
-                "type": "rect",
-                "from": { "data": "table" },
-                "encode": {
-                    "enter": {
-                        "x": { "scale": "xscale", "field": "category" },
-                        "width": { "scale": "xscale", "band": 1 },
-                        "y": { "scale": "yscale", "field": "amount" },
-                        "y2": { "scale": "yscale", "value": 0 }
-                    },
-                    "update": {
-                        "fill": { "value": "steelblue" }
-                    },
-                    "hover": {
-                        "fill": { "value": "red" }
-                    }
-                }
-            },
-            {
-                "type": "text",
-                "encode": {
-                    "enter": {
-                        "align": { "value": "center" },
-                        "baseline": { "value": "bottom" },
-                        "fill": { "value": "#333" }
-                    },
-                    "update": {
-                        "x": { "scale": "xscale", "signal": "tooltip.category", "band": 0.5 },
-                        "y": { "scale": "yscale", "signal": "tooltip.amount", "offset": -2 },
-                        "text": { "signal": "tooltip.amount" },
-                        "fillOpacity": [
-                            { "test": "isNaN(tooltip.amount)", "value": 0 },
-                            { "value": 1 }
-                        ]
-                    }
-                }
-            }
-        ]
-    }
 
 
-    // create a new view instance for a given Vega JSON spec
-    var view = new vega
-        .View(vega.parse(stackedBarChartSpec))
-        .renderer('none')
-        .initialize();
 
-    // generate static PNG file from chart
-    view
-        .toCanvas()
-        .then(function (canvas) {
-            // process node-canvas instance for example, generate a PNG stream to write var
-            //stream = canvas.createPNGStream();
-            console.log('Writing PNG to file...')
-            fs.writeFile('stackedBarChart.png', canvas.toBuffer(), function (err, result) {
-                console.log("graph created, attempting upload");
-                UploadGraphToSlack();
-            })
-        })
-        .catch(function (err) {
-            console.log("Error writing PNG to file:")
-            console.error(err)
-        });
-}
 
 
 getWeekFromNow = () => {
