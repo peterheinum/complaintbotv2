@@ -22,26 +22,21 @@ const params = {
 
 bot.on('start', function () {
     console.log('Goodmorning bitch');
-    // let randomcomplaint = getRandomComplaint();
-    // bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
+    let randomcomplaint = getRandomComplaint();
+    bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
     //fetchForecast("stockholm");
-    fetchDailyPrognosis('stockholm', "dogshit");
+    fetchDailyPrognosis('stockholm');
 });
 
-fetchDailyPrognosis = (location, userId) => {
-    let user;
-    if (userId != "") {
-        user = getUser(userId);
-    }
+fetchDailyPrognosis = (location) => {
     fetch(`http://weatherbackend.herokuapp.com/api/raw/${location}/C`).then(res => res.json()).then(weatherData => {
         //if(weatherData.alerts) bot.postMessageToChannel('fuck-shit-up', `todays weather contains a warning, check ${weatherData.alerts.uri} for details`, params);
         const arr = weatherData.hourly.data.reduce((acc, val) => {
-            acc.push({'time': convertUnixToTime(val.time), 'temp': val.temperature });
+            acc.push({'time': convertUnixToTime(val.time), 'temp': val.temperature })
             return acc;
         }, []);
-        
+        bot.postMessageToChannel('fuck-shit-up', "Creating daily weather graph", params);
         graphGenerator.createDailyGraph(arr);
-        
     });
 }
 
