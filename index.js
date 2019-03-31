@@ -11,7 +11,7 @@ const darksky_key = process.env.DARKSKY_KEY;
 // create a bot
 const envKey = process.env.KEY;
 const bot = new SlackBot({
-    token: envKey, // Add a bot https://my.slack.com/services/new/bot and put the token 
+    token: envKey, 
     name: 'complaintbotv2'
 });
 
@@ -141,12 +141,18 @@ fetchForecast = (location) => {
 }
 
 generateGraph = (data) => {
+    // if(data) {
+    //     data.reduce((acc, val) => {
+
+    //     })
+    // }
+
     let stackedBarChartSpec = {
         "$schema": "https://vega.github.io/schema/vega/v5.json",
         "width": 400,
         "height": 200,
         "padding": 5,
-
+        "background": "white",
         "data": [
             {
                 "name": "table",
