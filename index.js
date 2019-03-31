@@ -19,14 +19,28 @@ const params = {
     icon_emoji: ':japanese_ogre:'
 };
 
+const isItMonday = () => {
+    const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    return weekdays[new Date().getDay()] == 'Monday' ? true : false;
+}
 
 bot.on('start', function () {
     console.log('Goodmorning bitch');
     let randomcomplaint = getRandomComplaint();
     bot.postMessageToChannel('fuck-shit-up', randomcomplaint, params);
-    //fetchForecast("stockholm");
-    fetchDailyPrognosis('stockholm');
+    isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis('stockholm');
 });
+
+
+
 
 fetchDailyPrognosis = (location) => {
     fetch(`http://weatherbackend.herokuapp.com/api/raw/${location}/C`).then(res => res.json()).then(weatherData => {
