@@ -97,6 +97,7 @@ function reportWeatherFromCity(location, userId) {
             bot.postMessageToChannel('fuck-shit-up', `Daily weather report in stockholm ${currentweather}`, params);
         }
     });
+    fetchDailyPrognosis(location);
 }
 
 
