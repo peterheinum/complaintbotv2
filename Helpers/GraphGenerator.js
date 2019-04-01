@@ -137,23 +137,23 @@ const GraphGenerator = {
                     result
                 ) {
                     console.log("graph created, attempting upload");
-                    // this.uploadGraphToSlack();
-                    // request.post(
-                    //     {
-                    //         url: "https://slack.com/api/files.upload",
-                    //         formData: {
-                    //             token: envKey,
-                    //             title: "Image",
-                    //             filename: "stackedBarChart.png",
-                    //             filetype: "auto",
-                    //             channels: "#fuck-shit-up",
-                    //             file: fs.createReadStream("stackedBarChart.png")
-                    //         }
-                    //     },
-                    //     function (err, response) {
-                    //         console.log(JSON.parse(response.body));
-                    //     }
-                    // );
+                    this.uploadGraphToSlack();
+                    request.post(
+                        {
+                            url: "https://slack.com/api/files.upload",
+                            formData: {
+                                token: envKey,
+                                title: "Image",
+                                filename: "stackedBarChart.png",
+                                filetype: "auto",
+                                channels: "#fuck-shit-up",
+                                file: fs.createReadStream("stackedBarChart.png")
+                            }
+                        },
+                        function (err, response) {
+                            console.log(JSON.parse(response.body));
+                        }
+                    );
                 });
             })
             .catch(function (err) {
