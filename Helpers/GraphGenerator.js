@@ -137,7 +137,6 @@ const GraphGenerator = {
                     result
                 ) {
                     console.log("graph created, attempting upload");
-                    this.uploadGraphToSlack();
                     request.post(
                         {
                             url: "https://slack.com/api/files.upload",
