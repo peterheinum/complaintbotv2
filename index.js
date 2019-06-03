@@ -16,7 +16,7 @@ const bot = new SlackBot({
 });
 
 const params = {
-  icon_emoji: ":japanese_ogre:"
+  icon_emoji: ":partly_sunny_rain:"
 };
 
 const isItMonday = () => {
@@ -25,7 +25,8 @@ const isItMonday = () => {
 
 bot.on("start", function() {
   console.log("Goodmorning bitch");
-  isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
+  // isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
+  fetchDailyPrognosis('stockholm')
 });
 
 fetchDailyPrognosis = location => {
@@ -33,8 +34,10 @@ fetchDailyPrognosis = location => {
     .then(res => res.json())
     .then(weatherData => {
       //if(weatherData.alerts) bot.postMessageToChannel('fuck-shit-up', `todays weather contains a warning, check ${weatherData.alerts.uri} for details`, params);
+      console.log(weatherData.hourly.data)
+
       const arr = weatherData.hourly.data.reduce((acc, val) => {
-        acc.push({ time: convertUnixToTime(val.time), temp: val.temperature });
+        acc.push({ time: convertUnixToTime(val.time), temp: val.apparentTemperature });
         return acc;
       }, []);
       
