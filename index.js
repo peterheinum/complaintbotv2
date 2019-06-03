@@ -25,8 +25,6 @@ const isItMonday = () => {
 
 bot.on("start", function() {
   console.log("Goodmorning bitch");
-  const randomcomplaint = getRandomComplaint();
-  bot.postMessageToChannel("fuck-shit-up", randomcomplaint, params);
   isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
 });
 
@@ -107,32 +105,6 @@ function getUser(userId) {
   });
   return user;
 }
-
-function getRandomComplaint() {
-  let complaint = wordList[Math.floor(Math.random() * wordList.length)];
-  return complaint;
-}
-
-const wordList = [
-  "Life is definitely not worth it.",
-  "I regret waking up today.",
-  "Come on shitheads do something productive.",
-  "Remember that time I said I thought you were cool? I lied.",
-  "Do you ever wonder what life would be like if you’d gotten enough oxygen at birth?",
-  "Can you die of constipation? I ask because I’m worried about how full of shit you are.",
-  "You’ll never be the man your mom is.",
-  "Earth is full. Go home.",
-  "Your family tree must be a cactus ‘cause you’re all a bunch of pricks.",
-  "I was going to give you a nasty look but I see that you’ve already got one.",
-  "Eat shit die",
-  "Go fuck yourself",
-  "Fuck TypeScript",
-  `I'm on smoko, so leave me alone`,
-  "Complaining never makes anything better.",
-  "We are born crying, live complaining, and die disappointed.",
-  "There are times in life when, instead of complaining, you do something about your complaints.",
-  "You should do what you do best, join the garbage in the garbage can and be the trash you really are."
-];
 
 fetchForecast = location => {
   bot.postMessageToChannel(
