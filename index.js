@@ -25,8 +25,7 @@ const isItMonday = () => {
 
 bot.on("start", function() {
   console.log("Goodmorning bitch");
-  // isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
-  fetchDailyPrognosis('stockholm')
+  isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
 });
 
 fetchDailyPrognosis = location => {
