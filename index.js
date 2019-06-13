@@ -23,7 +23,7 @@ const isItMonday = () => {
   return new Date().getDay() == 1 ? true : false;
 };
 
-bot.on("start", function() {
+bot.on("start", function () {
   console.log("Goodmorning bitch");
   isItMonday() ? fetchForecast("stockholm") : fetchDailyPrognosis("stockholm");
 });
@@ -39,8 +39,8 @@ fetchDailyPrognosis = location => {
         acc.push({ time: convertUnixToTime(val.time), temp: val.apparentTemperature });
         return acc;
       }, []);
-      
-      graphGenerator.createDailyGraph(arr);
+
+      graphGenerator.fuckshitup(arr);
     });
 };
 
@@ -79,7 +79,7 @@ function reportWeatherFromCity(location, userId) {
     .then(weatherData => {
       let currentweather = `${weatherData.summary}, ${
         weatherData.Temperature
-      }°C`;
+        }°C`;
       if (userId != "") {
         bot.postMessageToChannel(
           "fuck-shit-up",
