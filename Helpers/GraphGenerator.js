@@ -182,11 +182,11 @@ const GraphGenerator = {
           "bind": {"input": "range", "min": 0, "max": 0.1}
         },
         {
-          "name": "innerRadius", "value": 0,
+          "name": "innerRadius", "value": 57,
           "bind": {"input": "range", "min": 0, "max": 90, "step": 1}
         },
         {
-          "name": "cornerRadius", "value": 0,
+          "name": "cornerRadius", "value": 10,
           "bind": {"input": "range", "min": 0, "max": 10, "step": 0.5}
         },
         {
