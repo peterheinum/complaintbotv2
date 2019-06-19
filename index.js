@@ -40,7 +40,7 @@ fetchDailyPrognosis = location => {
         return acc;
       }, []);
 
-      graphGenerator.fuckshitup(arr);
+      graphGenerator.createDailyGraph(arr);
     });
 };
 
