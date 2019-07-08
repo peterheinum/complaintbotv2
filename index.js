@@ -156,24 +156,3 @@ getWeekFromNow = () => {
   return weekArray;
 };
 
-function getLatAndLngFromRes(res) {
-  let latLng;
-  res.results.forEach(element => {
-    element.locations.forEach(e => {
-      latLng = `${e.latLng.lat},${e.latLng.lng}`;
-    });
-  });
-  return latLng;
-}
-
-function fetchLatAndLong(city) {
-  return fetch(
-    `http://www.mapquestapi.com/geocoding/v1/address?key=${mapquest_key}&location=${city}, SE`
-  );
-}
-
-function fetchWeather(latlng) {
-  return fetch(
-    `https://api.darksky.net/forecast/${darksky_key}/${latlng}?lang=sv&units=si`
-  );
-}

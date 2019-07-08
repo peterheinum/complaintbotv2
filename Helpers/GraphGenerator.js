@@ -455,22 +455,22 @@ const GraphGenerator = {
           result
         ) {
           console.log("graph created, attempting upload");
-          // request.post(
-          //   {
-          //     url: "https://slack.com/api/files.upload",
-          //     formData: {
-          //       token: envKey,
-          //       title: "Image",
-          //       filename: "AreaChart.png",
-          //       filetype: "auto",
-          //       channels: "#fuck-shit-up",
-          //       file: fs.createReadStream("AreaChart.png")
-          //     }
-          //   },
-          //   function (err, response) {
-          //     console.log(JSON.parse(response.body));
-          //   }
-          // );
+          request.post(
+            {
+              url: "https://slack.com/api/files.upload",
+              formData: {
+                token: envKey,
+                title: "Image",
+                filename: "AreaChart.png",
+                filetype: "auto",
+                channels: "#fuck-shit-up",
+                file: fs.createReadStream("AreaChart.png")
+              }
+            },
+            function (err, response) {
+              console.log(JSON.parse(response.body));
+            }
+          );
         });
       })
       .catch(function (err) {
